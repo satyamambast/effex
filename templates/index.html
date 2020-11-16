@@ -5,6 +5,7 @@
             width: 500px;
             height: 375px;
             border: 10px #333 solid;
+            visibility: hidden;
         }
         #videoElement {
             width: 500px;
@@ -24,21 +25,13 @@
 
         <div id="container">
             <video autoplay="true" id="videoElement">
-            
             </video>
+            <canvas id="canvasElement"></canvas>
+            <img id="imageElement" src="{{ url_for('video_feed') }}">
         </div>
-        <script>
-            var video = document.querySelector("#videoElement");
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-            if (navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function (stream) {
-                video.srcObject = stream;
-                })
-                .catch(function (err0r) {
-                console.log("Something went wrong!");
-                });
-            }
-        </script>
     </body>
 </html>
