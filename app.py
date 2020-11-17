@@ -12,14 +12,12 @@ import numpy as np
 app = Flask(__name__)
 app.logger.addHandler(logging.StreamHandler(stdout))
 socketio = SocketIO(app)
-
+fullframe=None
 @socketio.on('input image', namespace='/test')
 def test_message(input):
     input_str = input.split(",")[1]
     p_image=base64_to_pil_image(input_str)
-    c_image=toRGB(p_image)
-    print(len(c_image))
-    cv2.imwrite("hello.jpeg",c_image)
+    print(p_image)
     
     
 
@@ -36,9 +34,11 @@ def gen():
 
     app.logger.info("starting to generate frames!")
     while True:
-        frame = camera.get_frame() #pil_image_to_base64(camera.get_frame())
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        if fullframe==None:
+            continue
+        # frame = camera.get_frame() #pil_image_to_base64(camera.get_frame())
+        # yield (b'--frame\r\n'
+        #        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
 @app.route('/video_feed')
