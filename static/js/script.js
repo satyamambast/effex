@@ -1,43 +1,66 @@
-$(document).ready(function(){
-  let namespace = "/test";
-  let video = document.querySelector("#videoElement");
-  let canvas = document.querySelector("#canvasElement");
-  let ctx = canvas.getContext('2d');
+function onCvLoaded () {
+  console.log('cv', cv);
+  cv.onRuntimeInitialized = onReady;
+}
+const video = document.getElementById('video');
+const actionBtn = document.getElementById('actionBtn');
+const width = 1280;
+const height = 720;
+const FPS = 30;
+let stream;
+let streaming = false;
+function onReady () {
+  let src;
+  let dst;
+  const cap = new cv.VideoCapture(video);
 
-  var localMediaStream = null;
+  actionBtn.addEventListener('click', () => {
+      if (streaming) {
+          stop();
+          actionBtn.textContent = 'Start';
+      } else {
+          start();
+          actionBtn.textContent = 'Stop';
+      }
+  });
 
-  var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-
-  function sendSnapshot() {
-    if (!localMediaStream) {
-      return;
-    }
-
-    ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 600, 400);
-
-    let dataURL = canvas.toDataURL('image/jpeg');
-    socket.emit('input image', dataURL);
+  function start () {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then(_stream => {
+          stream = _stream;
+          console.log('stream', stream);
+          video.srcObject = stream;
+          video.play();
+          streaming = true;
+          src = new cv.Mat(height, width, cv.CV_8UC4);
+          dst = new cv.Mat(height, width, cv.CV_8UC1);
+          setTimeout(processVideo, 0)
+      })
+      .catch(err => console.log(`An error occurred: ${err}`));
   }
 
-  socket.on('connect', function() {
-    console.log('Connected!');
-  });
+  function stop () {
+      if (video) {
+          video.pause();
+          video.srcObject = null;
+      }
+      if (stream) {
+          stream.getVideoTracks()[0].stop();
+      }
+      streaming = false;
+  }
 
-  var constraints = {
-    video: {
-      width: { min: 640 },
-      height: { min: 480 }
-    }
-  };
-
-  navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-    video.srcObject = stream;
-    localMediaStream = stream;
-
-    setInterval(function () {
-      sendSnapshot();
-    }, 50);
-  }).catch(function(error) {
-    console.log(error);
-  });
-});
+  function processVideo () {
+      if (!streaming) {
+          src.delete();
+          dst.delete();
+          return;
+      }
+      const begin = Date.now();
+      cap.read(src)
+      cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+      cv.imshow('canvasOutput', dst);
+      const delay = 1000/FPS - (Date.now() - begin);
+      setTimeout(processVideo, delay);
+  }
+}
