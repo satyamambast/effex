@@ -40,9 +40,8 @@ body {
     position: fixed;
     bottom: 0;
     height: 100px;
-    margin-right: 100px;
-    margin-left: 100px;
-    width: 80%;
+	
+    width: 100%;
     padding-right: 100px;
     background-color: white;
 
