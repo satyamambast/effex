@@ -2,6 +2,20 @@ function onCvLoaded () {
     console.log('cv', cv);
     cv.onRuntimeInitialized = onReady;
 }
+function saveanddownload()
+{   
+    var canvas1 = document.getElementById("canvasOutput")
+    var element = document.createElement('a');
+    element.setAttribute('href', canvas1.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+    element.setAttribute('download', "effex.png");
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+}
 function finalchange(src,dst){
     out = new cv.Mat(height, width, cv.CV_8UC1);
     // var mode = document.getElementById("Effect").value;
@@ -18,6 +32,13 @@ function finalchange(src,dst){
     {
         cv.threshold(src, out, 177, 200, cv.THRESH_BINARY)
     }
+    else if(document.getElementById("canny").checked==true)
+    {
+      cv.cvtColor(src, out, cv.COLOR_RGBA2GRAY);
+      cv.Canny(out, out, 20, 90, 3, true);
+      
+    }
+    
     else
     {
         out=src;
@@ -41,10 +62,11 @@ function onReady () {
     actionBtn.addEventListener('click', () => {
         if (streaming) {
             stop();
-            actionBtn.textContent = 'Start';
+            document.getElementById("actionBtn").style.backgroundColor = "white"; 
+
         } else {
             start();
-            actionBtn.textContent = 'Stop';
+            document.getElementById("actionBtn").style.backgroundColor = "red";
         }
     });
 
