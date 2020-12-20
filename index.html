@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <title>Effex</title>
+    <link href="app.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" href="cam.png" type="image/png" sizes="16x16"> 
+</head>
+<body>
+<div class="input"> <video id="video" width="1280" height="720"></video> </div>
+<div class="out"> <canvas id="canvasOutput"></canvas> </div>
+
+<div class="bottom">
+    <div class="menu">
+    <div class="startbut">
+    <button id="actionBtn" class="btn"> <i class="fa fa-video-camera" aria-hidden="true"></i>
+    </button>
+    </div>
+    <div class="savebut">
+        <button id="savebut" class="btn" onclick="saveanddownload();"> <i class="fa fa-floppy-o" aria-hidden="true"></i>
+        </button>
+    </div>
+        
+        <div class="effects">
+        <input class="checkbox-tools" type="radio" id="mode1" name="effects" value="mode1">
+        <label for="mode1"> <i class="fa fa-pencil" aria-hidden="true"></i>  </label>
+        <input class="checkbox-tools" type="radio" id="mode2" name="effects" value="mode2" checked=true>
+        <label for="mode2"> <i class="fa fa-paint-brush" aria-hidden="true"></i>    </label>
+        <input class="checkbox-tools" type="radio" id="thresh" name="effects" value="thresh">
+        <label for="thresh"> <i class="fa fa-shield" aria-hidden="true"></i> </label>
+            <input class="checkbox-tools" type="radio" id="canny" name="effects" value="canny">
+        
+        <label for="canny"> <i class="fa fa-object-group" aria-hidden="true"></i>
+
+            
+
+        </label>
+        </div>
+    
+
+
+    </div>
+ </div>
+<script async src="opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
+<script src="script.js"></script>
+</body>
+</html>
